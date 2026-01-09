@@ -1,0 +1,5 @@
+{
+  "name": "ICT Smart Money Confluence Terminal",
+  "description": "A professional-grade trading terminal that detects ICT (Inner Circle Trader) and Smart Money Concepts (SMC) patterns including Order Blocks, Fair Value Gaps, and Market Structure shifts, enhanced with AI-powered trade analysis.",
+  "requestFramePermissions": []
+}
