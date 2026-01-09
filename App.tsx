@@ -155,16 +155,16 @@ const App: React.FC = () => {
   return (
     <div className="flex h-screen w-screen bg-slate-950 overflow-hidden text-slate-200">
       {/* Sidebar */}
-      <div className="w-80 flex-shrink-0 border-r border-slate-800 bg-slate-900 p-4 flex flex-col gap-6 overflow-y-auto">
+      <div className="w-80 flex-shrink-0 border-r border-slate-800 bg-slate-900 p-4 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
         <div className="flex items-center gap-3 border-b border-slate-800 pb-4">
           <div className="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-900/40">
-            <i className="fa-solid fa-tower-broadcast text-xl animate-pulse"></i>
+            <i className="fa-solid fa-tower-broadcast text-xl animate-pulse text-white"></i>
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight text-white">ICT Terminal</h1>
             <div className="flex items-center gap-1.5">
               <span className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-600'}`}></span>
-              <span className="text-[10px] text-slate-500 font-bold uppercase">{isLive ? 'Real-Time Data Active' : 'Connecting...'}</span>
+              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-tight">{isLive ? 'Market Data Connected' : 'Synchronizing...'}</span>
             </div>
           </div>
         </div>
@@ -206,58 +206,111 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* Drawing Tools Section */}
-        <section className="space-y-4">
-          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest">Drawing Tools</h2>
-          <div className="grid grid-cols-4 gap-2">
-            <button 
-              onClick={() => setActiveTool(activeTool === 'trendline' ? null : 'trendline')}
-              className={`p-2 rounded-lg border flex flex-col items-center justify-center transition-all ${activeTool === 'trendline' ? 'bg-blue-600 border-blue-400 text-white' : 'bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-400'}`}
-              title="Trendline"
-            >
-              <i className="fa-solid fa-minus rotate-[-45deg]"></i>
-            </button>
-            <button 
-              onClick={() => setActiveTool(activeTool === 'horizontal' ? null : 'horizontal')}
-              className={`p-2 rounded-lg border flex flex-col items-center justify-center transition-all ${activeTool === 'horizontal' ? 'bg-blue-600 border-blue-400 text-white' : 'bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-400'}`}
-              title="Horizontal Line"
-            >
-              <i className="fa-solid fa-grip-lines"></i>
-            </button>
-            <button 
-              onClick={() => setActiveTool(activeTool === 'fib' ? null : 'fib')}
-              className={`p-2 rounded-lg border flex flex-col items-center justify-center transition-all ${activeTool === 'fib' ? 'bg-blue-600 border-blue-400 text-white' : 'bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-400'}`}
-              title="Fibonacci Retracement"
-            >
-              <i className="fa-solid fa-align-justify"></i>
-            </button>
-            <button 
-              onClick={clearDrawings}
-              className="p-2 rounded-lg border border-slate-700 bg-slate-800 hover:bg-rose-900/40 hover:border-rose-500 flex flex-col items-center justify-center transition-all text-slate-400 hover:text-rose-400"
-              title="Clear All"
-            >
-              <i className="fa-solid fa-trash-can"></i>
-            </button>
-          </div>
-          {activeTool && (
-            <div className="text-[10px] text-blue-400 font-bold uppercase flex items-center gap-2 animate-pulse">
-              <i className="fa-solid fa-pencil"></i> Active Tool: {activeTool}
+        {/* Enhanced Confluence Checklist Dashboard */}
+        {analysis && (
+          <section className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest">Market Confluence</h2>
+              <div className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Live Scan</div>
             </div>
-          )}
-        </section>
 
+            <div className="space-y-3">
+              {/* Bullish Dashboard */}
+              <div className="bg-slate-800/30 rounded-xl border border-emerald-500/20 p-3 space-y-2">
+                <div className="flex justify-between items-center mb-1">
+                  <div className="text-[10px] font-bold text-emerald-500 uppercase flex items-center gap-1.5">
+                    <i className="fa-solid fa-arrow-trend-up"></i> Bullish Setup
+                  </div>
+                  <div className="text-xs font-black text-emerald-400 font-mono bg-emerald-500/10 px-1.5 rounded">{analysis.bullScore}/4</div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <PatternTag active={analysis.confluences.bullish.ob} label="Order Block" color="emerald" />
+                  <PatternTag active={analysis.confluences.bullish.fvg} label="FVG Gap" color="emerald" />
+                  <PatternTag active={analysis.confluences.bullish.sweep} label="Liq Sweep" color="emerald" />
+                  <PatternTag active={analysis.confluences.bullish.bos} label="Structure" color="emerald" />
+                </div>
+              </div>
+
+              {/* Bearish Dashboard */}
+              <div className="bg-slate-800/30 rounded-xl border border-rose-500/20 p-3 space-y-2">
+                <div className="flex justify-between items-center mb-1">
+                  <div className="text-[10px] font-bold text-rose-500 uppercase flex items-center gap-1.5">
+                    <i className="fa-solid fa-arrow-trend-down"></i> Bearish Setup
+                  </div>
+                  <div className="text-xs font-black text-rose-400 font-mono bg-rose-500/10 px-1.5 rounded">{analysis.bearScore}/4</div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <PatternTag active={analysis.confluences.bearish.ob} label="Order Block" color="rose" />
+                  <PatternTag active={analysis.confluences.bearish.fvg} label="FVG Gap" color="rose" />
+                  <PatternTag active={analysis.confluences.bearish.sweep} label="Liq Sweep" color="rose" />
+                  <PatternTag active={analysis.confluences.bearish.bos} label="Structure" color="rose" />
+                </div>
+              </div>
+
+              {/* Trade Execution Plan (New Section) */}
+              {analysis.signal !== 'NEUTRAL' && (
+                <div className="bg-indigo-950/20 rounded-xl border border-indigo-500/30 p-4 space-y-3 shadow-lg">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Trade Plan</h3>
+                    <div className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${analysis.signal === 'BUY' ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'}`}>
+                      {analysis.signal} Limit
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <span className="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">Entry Price</span>
+                      <div className="text-sm font-mono text-slate-200">{analysis.entryPrice?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+                    </div>
+                    <div className="space-y-1">
+                      <span className="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">Risk:Reward</span>
+                      <div className="text-sm font-mono text-indigo-400">1 : {analysis.rrRatio?.toFixed(1)}</div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 border-t border-indigo-500/10 pt-2">
+                    <div className="space-y-1">
+                      <span className="text-[9px] text-rose-500/70 uppercase font-bold tracking-tighter">Stop Loss</span>
+                      <div className="text-sm font-mono text-rose-400">{analysis.slPrice?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+                    </div>
+                    <div className="space-y-1">
+                      <span className="text-[9px] text-emerald-500/70 uppercase font-bold tracking-tighter">Take Profit</span>
+                      <div className="text-sm font-mono text-emerald-400">{analysis.tpPrice?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</div>
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-900/50 rounded-lg p-2 text-center border border-slate-800">
+                    <div className="text-[9px] text-slate-500 uppercase font-bold mb-0.5">Estimated Potential ROI</div>
+                    <div className={`text-lg font-black font-mono ${analysis.signal === 'BUY' ? 'text-emerald-500' : 'text-rose-500'}`}>
+                      {analysis.pnlEstimate?.toFixed(2)}%
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Signal Status - Simplified if Trade Plan is visible */}
+              {analysis.signal === 'NEUTRAL' && (
+                <div className="p-3 rounded-xl border-2 border-slate-800 bg-slate-900 text-center">
+                  <div className="text-[9px] font-bold uppercase mb-0.5 opacity-60 tracking-widest text-slate-500">Market Status</div>
+                  <div className="text-lg font-black tracking-tighter text-slate-600 uppercase italic">Waiting for Confluence</div>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Configuration Section */}
         <section className="space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest">Configuration</h2>
+            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest">Parameters</h2>
             <button onClick={handleRefresh} className="text-slate-400 hover:text-white transition-colors">
               <i className={`fa-solid fa-rotate ${!isLive ? 'animate-spin' : ''}`}></i>
             </button>
           </div>
-          
           <div className="space-y-3 bg-slate-800/30 p-3 rounded-xl border border-slate-800">
             <div>
               <div className="flex justify-between text-[10px] text-slate-400 mb-1 uppercase">
-                <span>Swing Length</span>
+                <span>Swing Depth</span>
                 <span className="text-blue-400 font-mono">{config.swingLength}</span>
               </div>
               <input 
@@ -273,7 +326,7 @@ const App: React.FC = () => {
                 <span className="text-blue-400 font-mono">{config.minConfluence}</span>
               </div>
               <input 
-                type="range" min="1" max="3" step="1"
+                type="range" min="1" max="4" step="1"
                 value={config.minConfluence}
                 onChange={(e) => updateConfig('minConfluence', parseInt(e.target.value))}
                 className="w-full h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
@@ -282,71 +335,81 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {analysis && (
-          <section className="space-y-3">
-            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest">Live Confluence</h2>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="bg-slate-800/50 p-3 rounded-xl border border-emerald-500/20 shadow-inner">
-                <div className="text-[10px] text-emerald-400 mb-1 uppercase font-bold">Bullish</div>
-                <div className="text-2xl font-bold text-emerald-500">{analysis.bullScore}/3</div>
-              </div>
-              <div className="bg-slate-800/50 p-3 rounded-xl border border-rose-500/20 shadow-inner">
-                <div className="text-[10px] text-rose-400 mb-1 uppercase font-bold">Bearish</div>
-                <div className="text-2xl font-bold text-rose-500">{analysis.bearScore}/3</div>
-              </div>
-            </div>
+        {/* Drawing Tools Section */}
+        <section className="space-y-4">
+          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest">Visual Toolkit</h2>
+          <div className="grid grid-cols-4 gap-2">
+            <button 
+              onClick={() => setActiveTool(activeTool === 'trendline' ? null : 'trendline')}
+              className={`p-2 rounded-lg border flex flex-col items-center justify-center transition-all ${activeTool === 'trendline' ? 'bg-blue-600 border-blue-400 text-white shadow-lg shadow-blue-500/20' : 'bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-400'}`}
+              title="Trendline"
+            >
+              <i className="fa-solid fa-minus rotate-[-45deg]"></i>
+            </button>
+            <button 
+              onClick={() => setActiveTool(activeTool === 'horizontal' ? null : 'horizontal')}
+              className={`p-2 rounded-lg border flex flex-col items-center justify-center transition-all ${activeTool === 'horizontal' ? 'bg-blue-600 border-blue-400 text-white shadow-lg shadow-blue-500/20' : 'bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-400'}`}
+              title="Horizontal Line"
+            >
+              <i className="fa-solid fa-grip-lines"></i>
+            </button>
+            <button 
+              onClick={() => setActiveTool(activeTool === 'fib' ? null : 'fib')}
+              className={`p-2 rounded-lg border flex flex-col items-center justify-center transition-all ${activeTool === 'fib' ? 'bg-blue-600 border-blue-400 text-white shadow-lg shadow-blue-500/20' : 'bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-400'}`}
+              title="Fibonacci Retracement"
+            >
+              <i className="fa-solid fa-align-justify"></i>
+            </button>
+            <button 
+              onClick={clearDrawings}
+              className="p-2 rounded-lg border border-slate-700 bg-slate-800 hover:bg-rose-900/40 hover:border-rose-500 flex flex-col items-center justify-center transition-all text-slate-400 hover:text-rose-400"
+              title="Clear All"
+            >
+              <i className="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </section>
 
-            <div className={`p-4 rounded-xl border-2 text-center transition-all shadow-lg ${
-              analysis.signal === 'BUY' ? 'border-emerald-500 bg-emerald-500/10' : 
-              analysis.signal === 'SELL' ? 'border-rose-500 bg-rose-500/10' : 
-              'border-slate-700 bg-slate-800 text-slate-300'
-            }`}>
-              <div className="text-[10px] font-bold uppercase mb-1 opacity-60">Market Signal</div>
-              <div className="text-xl font-black tracking-tighter">{analysis.signal}</div>
-            </div>
-          </section>
-        )}
-
+        {/* AI Analysis Suite */}
         <section className="mt-auto space-y-3 border-t border-slate-800 pt-6">
           <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-            <i className="fa-solid fa-sparkles text-indigo-400"></i> AI Analysis Suite
+            <i className="fa-solid fa-sparkles text-indigo-400"></i> Intelligence Layer
           </h2>
-          
-          <button 
-            onClick={() => runAiAnalysis('fast')}
-            disabled={isLoadingAi || !isLive}
-            className="w-full bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-white text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 border border-slate-700 transition-all active:scale-95 shadow-md"
-          >
-            <i className="fa-solid fa-bolt text-yellow-400"></i> Fast Scan
-          </button>
-          
-          <button 
-            onClick={() => runAiAnalysis('search')}
-            disabled={isLoadingAi || !isLive}
-            className="w-full bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-white text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 border border-slate-700 transition-all active:scale-95 shadow-md"
-          >
-            <i className="fa-brands fa-google text-blue-400"></i> Market Search
-          </button>
-          
-          <button 
-            onClick={() => runAiAnalysis('deep')}
-            disabled={isLoadingAi || !isLive}
-            className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 shadow-lg shadow-indigo-900/20 transition-all active:scale-95"
-          >
-            <i className="fa-solid fa-brain"></i> Deep Thinking
-          </button>
+          <div className="space-y-2">
+            <button 
+              onClick={() => runAiAnalysis('fast')}
+              disabled={isLoadingAi || !isLive}
+              className="w-full bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-white text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 border border-slate-700 transition-all active:scale-95 shadow-md"
+            >
+              <i className="fa-solid fa-bolt text-yellow-400"></i> Quick Insight
+            </button>
+            <button 
+              onClick={() => runAiAnalysis('search')}
+              disabled={isLoadingAi || !isLive}
+              className="w-full bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-white text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 border border-slate-700 transition-all active:scale-95 shadow-md"
+            >
+              <i className="fa-brands fa-google text-blue-400"></i> Web Grounding
+            </button>
+            <button 
+              onClick={() => runAiAnalysis('deep')}
+              disabled={isLoadingAi || !isLive}
+              className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-2 shadow-lg shadow-indigo-900/20 transition-all active:scale-95"
+            >
+              <i className="fa-solid fa-brain"></i> Institutional Thinking
+            </button>
+          </div>
         </section>
       </div>
 
       {/* Main Terminal Area */}
       <div className="flex-grow flex flex-col relative">
-        <header className="h-14 border-b border-slate-800 bg-slate-900/50 flex items-center justify-between px-6">
+        <header className="h-14 border-b border-slate-800 bg-slate-900/50 flex items-center justify-between px-6 z-10">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <span className="text-sm font-bold text-slate-100 tracking-wider uppercase">
                 {currentSymbol === 'PAXGUSDT' ? 'XAUUSD' : currentSymbol}
               </span>
-              <span className="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-blue-400 font-mono border border-slate-700 uppercase">{currentInterval}</span>
+              <span className="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-blue-400 font-mono border border-slate-700 uppercase font-bold">{currentInterval}</span>
             </div>
             <div className="flex gap-4">
               <div className="flex flex-col">
@@ -358,7 +421,7 @@ const App: React.FC = () => {
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">Volume</span>
+                <span className="text-[9px] text-slate-500 uppercase font-bold tracking-tighter">Volume (24h)</span>
                 <span className="text-sm font-mono text-slate-400">
                   {data.length > 0 ? data[data.length-1].volume.toFixed(2) : '0.00'}
                 </span>
@@ -367,7 +430,7 @@ const App: React.FC = () => {
           </div>
           
           {isLoadingAi && (
-            <div className="flex items-center gap-2 text-indigo-400 text-[10px] font-bold">
+            <div className="flex items-center gap-2 text-indigo-400 text-[10px] font-bold animate-pulse">
               <i className="fa-solid fa-circle-notch animate-spin"></i>
               GEMINI PROCESSING...
             </div>
@@ -384,7 +447,7 @@ const App: React.FC = () => {
         <main className="flex-grow relative bg-[#0B0F19]">
           <Chart 
             data={data} 
-            analysis={analysis || { bullScore: 0, bearScore: 0, orderBlocks: [], fvgs: [], structure: [], signal: 'NEUTRAL' }} 
+            analysis={analysis || { bullScore: 0, bearScore: 0, confluences: { bullish: {ob: false, fvg: false, bos: false, sweep: false}, bearish: {ob: false, fvg: false, bos: false, sweep: false} }, orderBlocks: [], fvgs: [], structure: [], signal: 'NEUTRAL' }} 
             activeTool={activeTool}
             drawings={drawings}
             onDrawingsChange={setDrawings}
@@ -392,18 +455,18 @@ const App: React.FC = () => {
           />
           
           {/* Legend Overlay */}
-          <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
+          <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none z-20">
             <div className="flex items-center gap-2 text-[10px] bg-slate-900/90 backdrop-blur px-2.5 py-1.5 rounded-lg border border-slate-800 shadow-xl">
               <div className="w-2.5 h-1 bg-blue-500 opacity-60 rounded-full"></div>
-              <span className="text-slate-300 font-medium">Fair Value Gap (FVG)</span>
+              <span className="text-slate-300 font-medium tracking-tight">Fair Value Gap (FVG)</span>
             </div>
             <div className="flex items-center gap-2 text-[10px] bg-slate-900/90 backdrop-blur px-2.5 py-1.5 rounded-lg border border-slate-800 shadow-xl">
               <div className="w-2.5 h-1 bg-emerald-500 opacity-60 rounded-full"></div>
-              <span className="text-slate-300 font-medium">Order Block (OB)</span>
+              <span className="text-slate-300 font-medium tracking-tight">Order Block (OB)</span>
             </div>
             <div className="flex items-center gap-2 text-[10px] bg-slate-900/90 backdrop-blur px-2.5 py-1.5 rounded-lg border border-slate-800 shadow-xl">
               <div className="w-2.5 h-0.5 border-t border-dashed border-emerald-500 w-4"></div>
-              <span className="text-slate-300 font-medium">Structure (BOS)</span>
+              <span className="text-slate-300 font-medium tracking-tight">Structure Shift (BOS)</span>
             </div>
           </div>
 
@@ -411,7 +474,7 @@ const App: React.FC = () => {
             <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm flex items-center justify-center z-50">
                <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl flex flex-col items-center gap-4">
                   <i className="fa-solid fa-circle-notch animate-spin text-3xl text-blue-500"></i>
-                  <span className="text-sm font-bold tracking-widest uppercase text-slate-300">Synchronizing {getSymbolDisplayName(currentSymbol)}...</span>
+                  <span className="text-sm font-bold tracking-widest uppercase text-slate-300">Syncing {getSymbolDisplayName(currentSymbol)}...</span>
                </div>
             </div>
           )}
@@ -419,7 +482,7 @@ const App: React.FC = () => {
 
         {/* AI Insight Panel */}
         {activeAiMode && (
-          <div className={`h-[40%] border-t border-slate-800 bg-slate-900/95 backdrop-blur p-6 flex flex-col transition-all duration-300 transform ${activeAiMode ? 'translate-y-0' : 'translate-y-full'}`}>
+          <div className={`h-[40%] border-t border-slate-800 bg-slate-900/95 backdrop-blur p-6 flex flex-col transition-all duration-300 transform z-30 ${activeAiMode ? 'translate-y-0' : 'translate-y-full'}`}>
             <div className="flex items-center justify-between mb-4 flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className={`p-2 rounded-lg ${
@@ -468,7 +531,7 @@ const App: React.FC = () => {
                   <span className="text-[10px] font-bold uppercase tracking-widest animate-pulse">Analyzing real-time orderflow & sentiment...</span>
                 </div>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-6 pb-4">
                   <div className={`p-5 rounded-2xl border shadow-inner ${aiResult.isError ? 'bg-rose-950/20 border-rose-900/50' : 'bg-slate-800/20 border-slate-800/50'}`}>
                     <div className={`prose prose-invert prose-sm max-w-none font-medium leading-relaxed ${aiResult.isError ? 'text-rose-200' : 'text-slate-300'}`}>
                       {aiResult.text.split('\n').map((line, i) => (
@@ -536,6 +599,27 @@ const App: React.FC = () => {
           background: transparent;
         }
       `}</style>
+    </div>
+  );
+};
+
+interface PatternTagProps {
+  active: boolean;
+  label: string;
+  color: 'emerald' | 'rose';
+}
+
+const PatternTag: React.FC<PatternTagProps> = ({ active, label, color }) => {
+  const activeClass = color === 'emerald' 
+    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.1)]' 
+    : 'bg-rose-500/20 text-rose-400 border-rose-500/30 shadow-[0_0_10px_rgba(239,68,68,0.1)]';
+  
+  const inactiveClass = 'bg-slate-800/50 text-slate-600 border-slate-700 opacity-40';
+
+  return (
+    <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md border text-[9px] font-bold transition-all duration-300 ${active ? activeClass : inactiveClass}`}>
+      <i className={`fa-solid ${active ? 'fa-check-circle' : 'fa-circle-dot'} text-[10px]`}></i>
+      {label}
     </div>
   );
 };

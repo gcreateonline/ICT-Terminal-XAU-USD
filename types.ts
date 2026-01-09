@@ -34,13 +34,29 @@ export interface MarketStructure {
   time: number;
 }
 
+export interface ConfluenceDetails {
+  ob: boolean;
+  fvg: boolean;
+  bos: boolean;
+  sweep: boolean;
+}
+
 export interface AnalysisResult {
   bullScore: number;
   bearScore: number;
+  confluences: {
+    bullish: ConfluenceDetails;
+    bearish: ConfluenceDetails;
+  };
   orderBlocks: OrderBlock[];
   fvgs: FVG[];
   structure: MarketStructure[];
   signal: 'BUY' | 'SELL' | 'NEUTRAL';
+  entryPrice?: number;
+  slPrice?: number;
+  tpPrice?: number;
+  rrRatio?: number;
+  pnlEstimate?: number;
 }
 
 export interface Config {

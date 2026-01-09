@@ -35,8 +35,8 @@ const Chart: React.FC<ChartProps> = ({ data, analysis, activeTool, drawings, onD
 
     const y = d3.scaleLinear()
       .domain([
-        d3.min(data, d => d.low)! * 0.999,
-        d3.max(data, d => d.high)! * 1.001
+        d3.min([d3.min(data, d => d.low)!, analysis.slPrice ?? Infinity, analysis.tpPrice ?? Infinity])! * 0.999,
+        d3.max([d3.max(data, d => d.high)!, analysis.slPrice ?? -Infinity, analysis.tpPrice ?? -Infinity])! * 1.001
       ])
       .nice()
       .range([height - margin.bottom, margin.top]);
@@ -117,6 +117,48 @@ const Chart: React.FC<ChartProps> = ({ data, analysis, activeTool, drawings, onD
         .attr('stroke-dasharray', '4,2')
         .attr('stroke-width', 2);
     });
+
+    // Draw SL/TP Lines if available
+    const lastX = (x(data[data.length - 1].time.toString()) ?? 0) + x.bandwidth();
+    if (analysis.slPrice !== undefined) {
+      svg.append('line')
+        .attr('x1', lastX)
+        .attr('x2', width - margin.right)
+        .attr('y1', y(analysis.slPrice))
+        .attr('y2', y(analysis.slPrice))
+        .attr('stroke', '#ef4444')
+        .attr('stroke-width', 2)
+        .attr('stroke-dasharray', '5,5');
+      
+      svg.append('text')
+        .attr('x', width - margin.right + 5)
+        .attr('y', y(analysis.slPrice))
+        .attr('dy', '0.32em')
+        .attr('fill', '#ef4444')
+        .attr('font-size', '10px')
+        .attr('font-weight', 'bold')
+        .text('SL');
+    }
+
+    if (analysis.tpPrice !== undefined) {
+      svg.append('line')
+        .attr('x1', lastX)
+        .attr('x2', width - margin.right)
+        .attr('y1', y(analysis.tpPrice))
+        .attr('y2', y(analysis.tpPrice))
+        .attr('stroke', '#10b981')
+        .attr('stroke-width', 2)
+        .attr('stroke-dasharray', '5,5');
+
+      svg.append('text')
+        .attr('x', width - margin.right + 5)
+        .attr('y', y(analysis.tpPrice))
+        .attr('dy', '0.32em')
+        .attr('fill', '#10b981')
+        .attr('font-size', '10px')
+        .attr('font-weight', 'bold')
+        .text('TP');
+    }
 
     // Y-Axis
     svg.append('g')
